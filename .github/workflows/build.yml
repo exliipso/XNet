@@ -1,0 +1,126 @@
+name: build
+
+on:
+  push:
+    branches: ["**"]
+    tags: ["v*"]
+    paths: ["native/**", "lua/**", ".github/**"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: native
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install 32-bit toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-multilib
+
+      - name: Install Rust targets
+        run: rustup target add i686-unknown-linux-gnu x86_64-unknown-linux-gnu
+
+      - name: Check
+        run: |
+          cargo fmt --check
+          cargo clippy --release --all-targets -- -D warnings
+          cargo test --lib
+
+      - name: Build
+        run: |
+          cargo build --release --target i686-unknown-linux-gnu
+          cargo build --release --target x86_64-unknown-linux-gnu
+
+      - name: Package
+        run: |
+          mkdir -p ../dist
+          cp target/i686-unknown-linux-gnu/release/libxnet.so ../dist/gmsv_xnet_linux.dll
+          cp target/x86_64-unknown-linux-gnu/release/libxnet.so ../dist/gmsv_xnet_linux64.dll
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xnet-linux
+          path: dist/*
+
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: native
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Rust targets
+        run: rustup target add i686-pc-windows-msvc x86_64-pc-windows-msvc
+
+      - name: Build
+        run: |
+          cargo build --release --target i686-pc-windows-msvc
+          cargo build --release --target x86_64-pc-windows-msvc
+
+      - name: Package
+        shell: bash
+        run: |
+          mkdir -p ../dist
+          cp target/i686-pc-windows-msvc/release/xnet.dll ../dist/gmsv_xnet_win32.dll
+          cp target/x86_64-pc-windows-msvc/release/xnet.dll ../dist/gmsv_xnet_win64.dll
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: xnet-windows
+          path: dist/*
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [linux, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: bin
+          merge-multiple: true
+
+      - name: Check versions
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          grep -q "^XNet.Version = \"$version\"$" lua/autorun/xnet.lua || { echo "lua/autorun/xnet.lua is not $version"; exit 1; }
+          grep -q "^version = \"$version\"$" native/Cargo.toml || { echo "native/Cargo.toml is not $version"; exit 1; }
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Package
+        run: |
+          for edition in lua native; do
+            root="pkg/$edition"
+            mkdir -p "$root/addons/xnet/lua/autorun"
+            cp lua/autorun/xnet.lua "$root/addons/xnet/lua/autorun/"
+            cp LICENSE NOTICE "$root/addons/xnet/"
+            cp ".github/release/INSTALL-$edition.txt" "$root/INSTALL.txt"
+          done
+
+          mkdir -p pkg/native/lua/bin
+          cp bin/*.dll pkg/native/lua/bin/
+          cp THIRD-PARTY-NOTICES.txt pkg/native/addons/xnet/
+
+          (cd pkg/lua && zip -qr "../../xnet-lua-$VERSION.zip" .)
+          (cd pkg/native && zip -qr "../../xnet-native-$VERSION.zip" .)
+          unzip -l "xnet-lua-$VERSION.zip"
+          unzip -l "xnet-native-$VERSION.zip"
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          name: XNet ${{ github.ref_name }}
+          body_path: .github/release/notes.md
+          draft: true
+          files: |
+            xnet-lua-${{ env.VERSION }}.zip
+            xnet-native-${{ env.VERSION }}.zip
+            bin/*.dll

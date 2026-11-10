@@ -1,0 +1,557 @@
+{
+  "hero": {
+    "stats": [
+      {
+        "big": "0.91 µs",
+        "small": "server CPU to send a small message,",
+        "small2": "the same as hand-written net code"
+      },
+      {
+        "big": "3.4×",
+        "small": "smaller than net.WriteTable",
+        "small2": "on inventory records"
+      },
+      {
+        "big": "0 ms",
+        "small": "added latency, with batching on",
+        "small2": "and flood protection built in"
+      }
+    ]
+  },
+  "small": {
+    "title": "One small message, every library",
+    "subtitle": "42, \"hello world\", true, {x = 1, y = 2} to one player, 150 per frame. Medians of 40 rounds on a live server.",
+    "footer": "Multipliers compare with XNet. Client decoding is the same Lua code for both XNet editions.",
+    "panelList": [
+      {
+        "title": "Server CPU per message",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 0.91,
+            "label": "0.91 µs"
+          },
+          {
+            "key": "xnetlua",
+            "value": 1.05,
+            "label": "1.05 µs"
+          },
+          {
+            "key": "raw",
+            "value": 0.89,
+            "label": "0.89 µs"
+          },
+          {
+            "key": "sfs",
+            "value": 2.26,
+            "label": "2.26 µs"
+          },
+          {
+            "key": "freenet",
+            "value": 2.33,
+            "label": "2.33 µs",
+            "tag": "numbers as floats"
+          },
+          {
+            "key": "bnet",
+            "value": 2.82,
+            "label": "2.82 µs"
+          },
+          {
+            "key": "writetable",
+            "value": 2.99,
+            "label": "2.99 µs"
+          },
+          {
+            "key": "netstream",
+            "value": 5.22,
+            "label": "5.22 µs"
+          },
+          {
+            "key": "nct",
+            "value": null,
+            "note": "302 µs, off the scale: it runs LZMA on every message"
+          }
+        ]
+      },
+      {
+        "title": "Client CPU per message",
+        "subtitle": "(other libraries not measured)",
+        "rows": [
+          {
+            "key": "xnetboth",
+            "value": 0.33,
+            "label": "0.33 µs"
+          },
+          {
+            "key": "raw",
+            "value": 0.33,
+            "label": "0.33 µs"
+          },
+          {
+            "key": "writetable",
+            "value": 1.86,
+            "label": "1.86 µs"
+          }
+        ]
+      },
+      {
+        "title": "Bytes on the wire per message",
+        "rows": [
+          {
+            "key": "xnetboth",
+            "value": 26,
+            "label": "26 B"
+          },
+          {
+            "key": "raw",
+            "value": 28,
+            "label": "28 B"
+          },
+          {
+            "key": "sfs",
+            "value": 29,
+            "label": "29 B"
+          },
+          {
+            "key": "freenet",
+            "value": 45,
+            "label": "45 B"
+          },
+          {
+            "key": "netstream",
+            "value": 50,
+            "label": "50 B"
+          },
+          {
+            "key": "nct",
+            "value": 59,
+            "label": "59 B"
+          },
+          {
+            "key": "bnet",
+            "value": 61,
+            "label": "61 B"
+          },
+          {
+            "key": "writetable",
+            "value": 90,
+            "label": "90 B"
+          }
+        ]
+      }
+    ]
+  },
+  "serializer": {
+    "title": "Serializer speed",
+    "subtitle": "Encode + decode time for one payload, on the server's 32-bit LuaJIT 2.0. Lower is better.",
+    "footer": "Medians of 3 interleaved runs. StreamNet from an earlier run on the same server. Multipliers compare with XNet.",
+    "panelList": [
+      {
+        "title": "Small message",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 1.5,
+            "label": "1.5 µs"
+          },
+          {
+            "key": "xnetlua",
+            "value": 1.7,
+            "label": "1.7 µs"
+          },
+          {
+            "key": "sfs",
+            "value": 1.5,
+            "label": "1.5 µs"
+          },
+          {
+            "key": "netstream",
+            "value": 5.0,
+            "label": "5.0 µs"
+          },
+          {
+            "key": "streamnet",
+            "value": 4.6,
+            "label": "4.6 µs"
+          },
+          {
+            "key": "von",
+            "value": 6.4,
+            "label": "6.4 µs"
+          }
+        ]
+      },
+      {
+        "title": "500 inventory records",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 481,
+            "label": "481 µs"
+          },
+          {
+            "key": "xnetlua",
+            "value": 850,
+            "label": "850 µs"
+          },
+          {
+            "key": "sfs",
+            "value": 1250,
+            "label": "1,250 µs"
+          },
+          {
+            "key": "netstream",
+            "value": 2836,
+            "label": "2,836 µs",
+            "tag": "lossy"
+          },
+          {
+            "key": "streamnet",
+            "value": 2231,
+            "label": "2,231 µs"
+          },
+          {
+            "key": "von",
+            "value": 5392,
+            "label": "5,392 µs",
+            "tag": "lossy"
+          }
+        ]
+      },
+      {
+        "title": "4,000 floats",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 193,
+            "label": "193 µs"
+          },
+          {
+            "key": "xnetlua",
+            "value": 416,
+            "label": "416 µs"
+          },
+          {
+            "key": "sfs",
+            "value": 1403,
+            "label": "1,403 µs"
+          },
+          {
+            "key": "netstream",
+            "value": 4208,
+            "label": "4,208 µs",
+            "tag": "lossy"
+          },
+          {
+            "key": "streamnet",
+            "value": 1910,
+            "label": "1,910 µs"
+          },
+          {
+            "key": "von",
+            "value": 5065,
+            "label": "5,065 µs",
+            "tag": "lossy"
+          }
+        ]
+      },
+      {
+        "title": "2,000 vectors",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 553,
+            "label": "553 µs"
+          },
+          {
+            "key": "xnetlua",
+            "value": 1201,
+            "label": "1,201 µs"
+          },
+          {
+            "key": "sfs",
+            "value": 2038,
+            "label": "2,038 µs"
+          },
+          {
+            "key": "netstream",
+            "value": 4859,
+            "label": "4,859 µs"
+          },
+          {
+            "key": "streamnet",
+            "value": 3012,
+            "label": "3,012 µs"
+          },
+          {
+            "key": "von",
+            "value": 4192,
+            "label": "4,192 µs"
+          }
+        ]
+      }
+    ]
+  },
+  "size": {
+    "title": "Encoded size",
+    "subtitle": "Bytes before any compression. Smaller is better and, on a link capped at 45 KB/s, faster.",
+    "footer": "Both XNet editions write identical bytes. Multipliers compare with XNet.",
+    "panelList": [
+      {
+        "title": "500 inventory records",
+        "rows": [
+          {
+            "key": "xnetboth",
+            "value": 19379,
+            "label": "18.9 KB"
+          },
+          {
+            "key": "sfs",
+            "value": 50097,
+            "label": "48.9 KB"
+          },
+          {
+            "key": "netstream",
+            "value": 30421,
+            "label": "29.7 KB"
+          },
+          {
+            "key": "streamnet",
+            "value": 74008,
+            "label": "72.3 KB"
+          },
+          {
+            "key": "von",
+            "value": 66718,
+            "label": "65.2 KB"
+          }
+        ]
+      },
+      {
+        "title": "4,000 integers",
+        "rows": [
+          {
+            "key": "xnetboth",
+            "value": 14828,
+            "label": "14.5 KB"
+          },
+          {
+            "key": "sfs",
+            "value": 14827,
+            "label": "14.5 KB"
+          },
+          {
+            "key": "netstream",
+            "value": 25240,
+            "label": "24.6 KB"
+          },
+          {
+            "key": "streamnet",
+            "value": 20008,
+            "label": "19.5 KB"
+          },
+          {
+            "key": "von",
+            "value": 23572,
+            "label": "23.0 KB"
+          }
+        ]
+      },
+      {
+        "title": "2,000 vectors",
+        "rows": [
+          {
+            "key": "xnetboth",
+            "value": 26006,
+            "label": "25.4 KB"
+          },
+          {
+            "key": "sfs",
+            "value": 26002,
+            "label": "25.4 KB"
+          },
+          {
+            "key": "netstream",
+            "value": 43838,
+            "label": "42.8 KB"
+          },
+          {
+            "key": "streamnet",
+            "value": 50008,
+            "label": "48.8 KB"
+          },
+          {
+            "key": "von",
+            "value": 41834,
+            "label": "40.9 KB"
+          }
+        ]
+      }
+    ]
+  },
+  "transfers": {
+    "title": "Big transfers",
+    "subtitle": "Server to client, until the client confirms it has the data. Lower is better. net_splitpacket_maxrate left at its 45 KB/s default.",
+    "footer": "Seconds until the client confirms it has the data. Multipliers compare with XNet.",
+    "panelList": [
+      {
+        "title": "2,000 inventory records (77 KB encoded)",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 0.56,
+            "label": "0.56 s"
+          },
+          {
+            "key": "netstream",
+            "value": 1.05,
+            "label": "1.05 s"
+          },
+          {
+            "key": "streamnet",
+            "value": 0.73,
+            "label": "0.73 s"
+          },
+          {
+            "key": "vnet",
+            "value": 2.47,
+            "label": "2.47 s"
+          }
+        ]
+      },
+      {
+        "title": "20,000 inventory records (780 KB encoded)",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 5.4,
+            "label": "5.4 s"
+          },
+          {
+            "key": "netstream",
+            "value": null,
+            "note": "not run: a 1 MB send disconnected the test client"
+          },
+          {
+            "key": "streamnet",
+            "value": null,
+            "note": "failed: StreamNet gave up (\"maximum retries reached\")"
+          },
+          {
+            "key": "vnet",
+            "value": 23.8,
+            "label": "23.8 s"
+          }
+        ]
+      },
+      {
+        "title": "512 KB of random bytes (incompressible)",
+        "rows": [
+          {
+            "key": "xnet",
+            "value": 13.1,
+            "label": "13.1 s"
+          },
+          {
+            "key": "netstream",
+            "value": null,
+            "note": "not run: a 1 MB send disconnected the test client"
+          },
+          {
+            "key": "streamnet",
+            "value": null,
+            "note": "failed: StreamNet gave up (\"maximum retries reached\")"
+          },
+          {
+            "key": "vnet",
+            "value": 50.1,
+            "label": "50.1 s"
+          }
+        ]
+      }
+    ]
+  },
+  "writetable": {
+    "title": "XNet against GMod's own net.WriteTable",
+    "subtitle": "How many times better (blue) or worse (red) XNet is, sending the same table to one player.",
+    "groups": [
+      {
+        "title": "Server CPU per send",
+        "rows": [
+          {
+            "label": "small message",
+            "ratio": 3.29,
+            "text": "3.3× faster"
+          },
+          {
+            "label": "300 records",
+            "ratio": 1.78,
+            "text": "1.8× faster"
+          },
+          {
+            "label": "2,000 floats",
+            "ratio": 1.67,
+            "text": "1.7× faster"
+          },
+          {
+            "label": "800 vectors",
+            "ratio": 1.07,
+            "text": "1.1× faster"
+          }
+        ]
+      },
+      {
+        "title": "Client CPU per receive",
+        "rows": [
+          {
+            "label": "small message",
+            "ratio": 5.64,
+            "text": "5.6× faster"
+          },
+          {
+            "label": "300 records",
+            "ratio": 2.34,
+            "text": "2.3× faster"
+          },
+          {
+            "label": "2,000 floats",
+            "ratio": 2.48,
+            "text": "2.5× faster"
+          },
+          {
+            "label": "800 vectors",
+            "ratio": 1.16,
+            "text": "1.2× faster"
+          }
+        ]
+      },
+      {
+        "title": "Bytes on the wire",
+        "rows": [
+          {
+            "label": "small message",
+            "ratio": 3.46,
+            "text": "3.5× smaller"
+          },
+          {
+            "label": "300 records",
+            "ratio": 3.42,
+            "text": "3.4× smaller"
+          },
+          {
+            "label": "2,000 floats",
+            "ratio": 2,
+            "text": "2.0× smaller"
+          },
+          {
+            "label": "800 vectors",
+            "ratio": 1.38,
+            "text": "1.4× smaller"
+          }
+        ]
+      }
+    ],
+    "footer": "Log scale, centred on equal (1×). Small message: current build, medians of 40 rounds. Tables: an earlier build, medians of 8."
+  }
+}

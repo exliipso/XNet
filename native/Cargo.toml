@@ -1,0 +1,23 @@
+[package]
+name = "xnet"
+version = "0.4.1"
+edition = "2021"
+description = "XNet's native encoder for Garry's Mod servers"
+authors = ["exliipso"]
+license = "Apache-2.0"
+repository = "https://github.com/exliipso/XNet"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+gmod = { version = "17", default-features = false }
+libloading = "0.9"
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = "symbols"

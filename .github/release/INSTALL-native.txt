@@ -1,0 +1,54 @@
+XNet - native edition
+=====================
+
+Fast, safe networking for Garry's Mod, with the server side encoding in
+Rust. Players never download a binary: clients use the Lua edition, which
+the server sends them automatically.
+
+Install
+-------
+
+1. Extract this zip into your server's "garrysmod" folder. You get:
+
+       garrysmod/addons/xnet/lua/autorun/xnet.lua
+       garrysmod/lua/bin/gmsv_xnet_linux.dll     Linux, 32-bit (default srcds)
+       garrysmod/lua/bin/gmsv_xnet_linux64.dll   Linux, 64-bit (x86-64 branch)
+       garrysmod/lua/bin/gmsv_xnet_win32.dll     Windows, 32-bit
+       garrysmod/lua/bin/gmsv_xnet_win64.dll     Windows, 64-bit
+
+   Garry's Mod loads only the one that matches your server. You can delete
+   the other three.
+
+2. Restart the server. A binary module that is already loaded is only
+   replaced by a restart, not by a map change.
+
+Check it works
+--------------
+
+In the server console:
+
+       lua_run print(XNet.Version, XNet.Native, XNetNative and XNetNative.Version)
+
+XNet.Native is true when the module is in use. If it prints false, the
+binary for your server is missing from garrysmod/lua/bin (or is the wrong
+one), and XNet keeps working in pure Lua.
+
+Use it
+------
+
+Exactly like the Lua edition:
+
+       -- server
+       XNet.Receive("shop.buy", function(ply, item, amount) end)
+       XNet.Send(ply, "inventory.sync", inventory)
+
+       -- client
+       XNet.Receive("inventory.sync", function(inventory) end)
+       XNet.Send("shop.buy", "weapon_ak47", 2)
+
+Full documentation: https://github.com/exliipso/XNet
+
+Removing it: delete garrysmod/addons/xnet and the gmsv_xnet_*.dll files.
+
+License: Apache License 2.0, originally developed by exliipso. The license
+and NOTICE are in garrysmod/addons/xnet/; keep them when you redistribute XNet.

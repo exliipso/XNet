@@ -1,0 +1,11 @@
+XNet
+Copyright 2026 exliipso
+
+XNet is an open-source networking library for Garry's Mod.
+
+Originally developed by exliipso (https://github.com/exliipso).
+
+Licensed under the Apache License, Version 2.0.
+
+The native modules (gmsv_xnet_*.dll) include third-party components; their
+notices are in THIRD-PARTY-NOTICES.txt.

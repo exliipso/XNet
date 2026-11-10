@@ -1,0 +1,48 @@
+XNet - Lua edition
+==================
+
+Fast, safe networking for Garry's Mod. Pure Lua: runs on any server,
+nothing to compile, nothing for players to download.
+
+Install
+-------
+
+1. Extract this zip into your server's "garrysmod" folder. You get:
+
+       garrysmod/addons/xnet/lua/autorun/xnet.lua
+
+2. Restart the server (or change the map).
+
+Clients receive the file automatically, like any addon's Lua.
+
+Check it works
+--------------
+
+In the server console:
+
+       lua_run print(XNet.Version)
+
+It prints the version.
+
+Use it
+------
+
+       -- server
+       XNet.Receive("shop.buy", function(ply, item, amount) end)
+       XNet.Send(ply, "inventory.sync", inventory)
+
+       -- client
+       XNet.Receive("inventory.sync", function(inventory) end)
+       XNet.Send("shop.buy", "weapon_ak47", 2)
+
+Full documentation: https://github.com/exliipso/XNet
+
+Shipping it inside your own addon: copy lua/autorun/xnet.lua into your
+addon. If several addons carry it, the first one loaded wins and the rest
+reuse it.
+
+Faster on the server: the native edition (xnet-native-*.zip) adds a binary
+module that encodes in Rust. Same API, same files for clients.
+
+License: Apache License 2.0, originally developed by exliipso. The license
+and NOTICE are in garrysmod/addons/xnet/; keep them when you redistribute XNet.
